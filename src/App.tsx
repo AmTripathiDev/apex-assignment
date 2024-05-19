@@ -1,24 +1,25 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import "./App.css";
+import SidebarComponent from "./components/sidebar/sidebar";
+import { Navigate, Route, Routes } from "react-router-dom";
+import { routings } from "./routes/routing";
+import { route } from "./model/route.model";
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div className="screen">
+      <SidebarComponent>
+        <Routes>
+          {routings.map((route: route, index: number) => (
+            <Route
+              key={index}
+              path={route.path}
+              element={
+                route.path === "/" ? <Navigate to="home" /> : <route.element />
+              }
+            />
+          ))}
+        </Routes>
+      </SidebarComponent>
     </div>
   );
 }
