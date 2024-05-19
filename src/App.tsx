@@ -9,15 +9,21 @@ function App() {
     <div className="screen">
       <SidebarComponent>
         <Routes>
-          {routings.map((route: route, index: number) => (
-            <Route
-              key={index}
-              path={route.path}
-              element={
-                route.path === "/" ? <Navigate to="home" /> : <route.element />
-              }
-            />
-          ))}
+          {routings.map((route: route, index: number) => {
+            return (
+              <Route
+                key={index}
+                path={route.path}
+                element={
+                  route.path === "/" ? (
+                    <Navigate to="home" />
+                  ) : (
+                    <route.element />
+                  )
+                }
+              />
+            );
+          })}
         </Routes>
       </SidebarComponent>
     </div>

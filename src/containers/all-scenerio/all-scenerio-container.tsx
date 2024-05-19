@@ -13,12 +13,7 @@ import NoDataScreen from "../../components/noData/no-data-screen";
 
 const ScenerioDataScreen = () => {
   const BaseUrl = "http://localhost:5000";
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [isConfirmAllModalOpen, setIsConfirmAllModalOpen] = useState(false);
   const [allScenerio, setAllScenerio] = useState<Scenerio[] | []>([]);
-  const [allVehicle, setAllVehicle] = useState<Vehicle | null>(null);
-  const [selectedItemId, setSelectedItemId] = useState(null);
-  const { scenerioId, vehicleId } = useParams();
   const navigate = useNavigate();
 
   const deleteScenerio = async (itemId: any) => {
@@ -44,13 +39,13 @@ const ScenerioDataScreen = () => {
           <header>
             <h2>All Items</h2>
             <div className="header-actions">
-              <button onClick={() => navigate("/add-item")}>New Item</button>
-              <button onClick={() => navigate("/add-category")}>
-                Add Category
+              <button onClick={() => navigate("/add/scenerio")}>
+                New Scenerio
               </button>
-              <button onClick={() => setIsConfirmAllModalOpen(true)}>
-                Delete All
+              <button onClick={() => navigate("/add/vehicle")}>
+                Add Vehicle
               </button>
+              <button>Delete All</button>
             </div>
           </header>
           <main className="data-table">
@@ -64,10 +59,7 @@ const ScenerioDataScreen = () => {
               <span>Delete</span>
             </div>
             {allScenerio.map((item, index) => (
-              <div
-                className="data-table-item"
-                onClick={() => navigate(`/home/${item.id}`)}
-              >
+              <div className="data-table-item">
                 <span>{item.id}</span>
                 <span>{item?.scenerioName}</span>
                 <span>{item?.scenerioTime}</span>

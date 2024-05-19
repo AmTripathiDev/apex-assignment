@@ -9,6 +9,7 @@ import { VehicleInitialValue } from "../../default/vehicle.default";
 
 export const AddVehicleContainer = () => {
   const BaseUrl = "http://localhost:5000";
+
   const { scenerioId, vehicleId } = useParams();
   const navigate = useNavigate();
   const [allScenerio, setAllScenerio] = useState<Scenerio[] | []>([]);
@@ -19,6 +20,7 @@ export const AddVehicleContainer = () => {
   useEffect(() => {
     const fetchScenerios = async () => {
       const all_Scenerio = await axios.get(`${BaseUrl}/api/scenerio/all`);
+      console.log(all_Scenerio, " coming all scenerio ");
       setAllScenerio(all_Scenerio.data);
     };
     fetchScenerios();
@@ -50,7 +52,6 @@ export const AddVehicleContainer = () => {
   } = useFormControl(initialValues);
 
   const createVehicle = async (vehicle: Vehicle) => {
-    console.log(vehicle, " vehicle ");
     const response = await axios.post(`${BaseUrl}/api/vehicle/create`, vehicle);
     if (response.status == 201) {
       resetForm();
@@ -94,7 +95,7 @@ export const AddVehicleContainer = () => {
     if (isFormValid) {
       const vehicle: Vehicle = {
         vehicleName: values.vehicleName,
-        scenerioId: values.scenerioList,
+        scenerioId: values.scenerioList.value,
         positionX: values.positionX,
         positionY: values.positionY,
         speed: values.vehicleSpeed,
@@ -102,20 +103,27 @@ export const AddVehicleContainer = () => {
         color: "#" + Math.floor(id * 16777215).toString(16),
       };
       if (!!fetchScenerios == true && vehicleId) {
+        console.log(fetchScenerios, " ", vehicle);
         const updateScenerio = {
           ...vehicle,
           id: vehicleId,
         };
         updateVehicle(updateScenerio);
-        console.log(updateScenerio, " update scenerio ");
       } else if (!!fetchScenerios && !vehicleId) {
         const updateScenerio = {
           ...vehicle,
           id: fetchScenerios.id,
+          scenerioId: values.scenerioList.value,
         };
+
         addVehicle(updateScenerio);
       } else {
-        createVehicle(vehicle);
+        console.log("3");
+        const createScenerio = {
+          ...vehicle,
+          scenerioId: values.scenerioList.value,
+        };
+        createVehicle(createScenerio);
       }
     }
   };

@@ -12,6 +12,7 @@ import SimulationGraph from "../../components/Scenerio/SimulationGraph";
 
 const HomeScreen = () => {
   const BaseUrl = "http://localhost:5000";
+
   const navigate = useNavigate();
   const [scenerios, setScenerios] = useState<Scenerio[] | []>([]);
   const [isActive, setIsActive] = useState(false);
@@ -20,31 +21,45 @@ const HomeScreen = () => {
   const [selectedScenerio, setSelectedScenerio] = useState<Scenerio | null>(
     null
   );
+
+  const [SelectedVehicle, setSelectedVehicle] = useState<Vehicle[] | []>([]);
   async function deleteVehicle(vehicle_id: any) {
     await axios.delete(`${BaseUrl}/api/vehicle/delete/${vehicle_id}`);
-    const data: any = selectedScenerio?.vehicles.filter(
-      (data) => data.id !== vehicle_id
+
+    // Update SelectedVehicle state
+    const updatedVehicles = SelectedVehicle.filter(
+      (vehicle) => vehicle.id !== vehicle_id
     );
-    setSelectedScenerio((prev: any) => ({
-      ...prev,
-      vehicles: data,
-    }));
+    setSelectedVehicle(updatedVehicles);
+
+    // Update selectedScenerio state
+    if (selectedScenerio) {
+      const updatedScenerio = {
+        ...selectedScenerio,
+        vehicles: selectedScenerio.vehicles.filter(
+          (vehicle) => vehicle.id !== vehicle_id
+        ),
+      };
+      setSelectedScenerio(updatedScenerio);
+    }
   }
 
   const fetchScenerios = async () => {
+    console.log(BaseUrl, "baseUrl ");
     const all_Scenerio = await axios.get(`${BaseUrl}/api/scenerio/all`);
     setScenerios(all_Scenerio.data);
   };
 
   useEffect(() => {
     fetchScenerios();
-  }, [deleteVehicle]);
+  }, []);
 
   const handleScenerioIdChange = (event: any) => {
     const select = scenerios.filter(
       (scenerio: Scenerio) => scenerio.id === event.target.value
     );
     setSelectedScenerio(select[0]);
+    setSelectedVehicle(select[0].vehicles);
   };
 
   const startSimulation = () => {
@@ -81,7 +96,7 @@ const HomeScreen = () => {
 
         {scenerios.length ? (
           <>
-            {selectedScenerio?.vehicles.length ? (
+            {SelectedVehicle.length ? (
               <>
                 <div className="scenerios-table">
                   <div className="table-header">
@@ -96,11 +111,7 @@ const HomeScreen = () => {
                   </div>
 
                   {selectedScenerio?.vehicles?.map((vehicle: Vehicle, idx) => (
-                    <div
-                      className="data-table-item"
-                      key={idx}
-                      onClick={() => navigate(`/home/${vehicle.id}`)}
-                    >
+                    <div className="data-table-item" key={idx}>
                       <span>{vehicle.id}</span>
                       <span>{vehicle.vehicleName}</span>
                       <span>{vehicle?.positionX}</span>
@@ -113,7 +124,6 @@ const HomeScreen = () => {
                           alt="Edit"
                           height={20}
                           onClick={(event) => {
-                            event.stopPropagation();
                             navigate(
                               `/edit/vehicle/${vehicle.id}/${vehicle.scenerioId}`
                             );
@@ -126,7 +136,6 @@ const HomeScreen = () => {
                           alt="Delete"
                           height={35}
                           onClick={(event) => {
-                            event.stopPropagation();
                             deleteVehicle(vehicle.id);
                           }}
                         />

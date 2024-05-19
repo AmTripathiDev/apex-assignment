@@ -6,6 +6,7 @@ import { route } from "../model/route.model";
 
 export const routings: route[] = [
   { name: "Home", path: "/home", breakCrumb: "/home", element: HomeScreen },
+  { name: "Home", path: "/", breakCrumb: "/home", element: HomeScreen },
   {
     name: "Add Scenerio",
     path: "/add/scenerio",

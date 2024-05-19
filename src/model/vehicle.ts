@@ -1,6 +1,6 @@
 export interface Vehicle {
   id?: string;
-  scenerioId: number;
+  scenerioId: string;
   vehicleName: string;
   speed: number;
   positionX: number;
